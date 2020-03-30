@@ -1,1 +1,1 @@
-Primitive static reverse proxy written in Golang
+Very simple reverse proxy written to learn golang
