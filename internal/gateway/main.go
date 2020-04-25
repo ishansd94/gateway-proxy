@@ -37,7 +37,7 @@ func Run() error {
 
 			target := rmap[backend.Match]
 
-			r.Any(backend.Match, gin.WrapF(NewProxyHandler(target)))
+			r.Any(backend.Match, gin.WrapF(NewProxyHandler(s.RoutingMode, target)))
 		}
 
 		serverConfig := &http.Server{
@@ -58,19 +58,23 @@ func Run() error {
 	return nil
 }
 
-func NewProxyHandler(target *url.URL) func(http.ResponseWriter, *http.Request) {
+func NewProxyHandler(routingmode string, target *url.URL) func(http.ResponseWriter, *http.Request) {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		proxy := httputil.NewSingleHostReverseProxy(target)
-
-		litter.Dump(r)
 
 		r.Header.Set("X-Forwarded-Host", r.Header.Get("Host"))
 
 		r.URL.Host = target.Host
 		r.URL.Scheme = target.Scheme
 		r.Host = target.Host
+
+		if routingmode == "gateway" {
+			r.URL.Path = ""
+		}
+
+		litter.Dump(proxy.Director)
 
 		proxy.ServeHTTP(w, r)
 	}

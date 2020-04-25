@@ -16,7 +16,7 @@ func GetConfig() (*Config, error) {
 
 	config := Config{}
 
-	filepath := env.Get("PROXY_CONFIG_FILE", "/etc/gateway/gateway.yaml")
+	filepath := env.Get("GATEWAY_CONFIG_FILE", "/etc/gateway/gateway.yaml")
 
 	log.Info("gateway", fmt.Sprintf("reading configuration file at: %s", filepath))
 

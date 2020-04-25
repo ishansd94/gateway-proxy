@@ -5,6 +5,8 @@ servers:
   - port: 8085
     timeout: 3600
     mode: http
+    routing_mode: proxy
+    balancer_type: roundrobin
 
     backends:
       - match: "service/1"
@@ -15,4 +17,23 @@ servers:
       - match: "service/2"
         target: "ip172-18-0-54-bqhukhtim9m000chr690-8080.direct.labs.play-with-docker.com"
         port: 80
+        path: "/yoyo"
+        scheme: http
+
+  - port: 8086
+    timeout: 3600
+    mode: http
+    routing_mode: gateway
+    balancer_type: roundrobin
+
+    backends:
+      - match: "service/1"
+        target: "ip172-18-0-91-bqhukhtim9m000chr690-8080.direct.labs.play-with-docker.com"
+        port: 80
+        scheme: http
+
+      - match: "service/2"
+        target: "ip172-18-0-54-bqhukhtim9m000chr690-8080.direct.labs.play-with-docker.com"
+        port: 80
+        path: "/yoyo"
         scheme: http

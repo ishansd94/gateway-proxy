@@ -4,13 +4,14 @@ import (
 	"fmt"
 	"net/url"
 	"strconv"
+	"strings"
 
 	"github.com/ishansd94/gateway-proxy/pkg/log"
 )
 
 // Config wraps all the configurations available for the loadbalancer
 type Config struct {
-	Logs Logs
+	Logs    Logs
 	Servers []Server
 }
 
@@ -21,32 +22,33 @@ type Logs struct {
 
 // Loadbalancer server configuration
 type Server struct {
-	Port int
-	Timeout int
-	Mode string
+	Port         int
+	Timeout      int
+	Mode         string
+	RoutingMode  string `yaml:"routing_mode"`
+	BalancerMode string `yaml:"balancer_type"`
 
 	Backends []Backend
 }
 
 // Backend server configuration
 type Backend struct {
-	Match string
+	Match  string
 	Target string
-	Port int
-	Path string
+	Port   int
+	Path   string
 	Scheme string
 }
 
-
 func (b *Backend) GetTarget() (*url.URL, error) {
 
-	tagrgetfullpath := b.Target
+	tagrgetfullpath := fmt.Sprintf("%s:%s", b.Target, strconv.Itoa(b.Port))
 
 	if b.Path != "" {
-		tagrgetfullpath = fmt.Sprintf("%s/%s", b.Target, b.Path)
+		tagrgetfullpath = fmt.Sprintf("%s/%s", tagrgetfullpath, strings.Replace(b.Path, "/", "", 1))
 	}
 
-	constructedURL, err := url.Parse(fmt.Sprintf("%s://%s:%s" , b.Scheme, tagrgetfullpath, strconv.Itoa(b.Port) ))
+	constructedURL, err := url.Parse(fmt.Sprintf("%s://%s", b.Scheme, tagrgetfullpath))
 	if err != nil {
 		log.Error("gateway", "error constructing target url", err)
 		return nil, err
