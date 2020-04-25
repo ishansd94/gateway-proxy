@@ -1,1 +1,1 @@
-Very simple reverse proxy written to learn golang
+Very simple gateway proxy written to learn golang
