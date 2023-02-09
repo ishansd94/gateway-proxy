@@ -3,7 +3,7 @@ module github.com/ishansd94/gateway-proxy
 go 1.14
 
 require (
-	github.com/gin-gonic/gin v1.6.2
+	github.com/gin-gonic/gin v1.7.7
 	github.com/ishansd94/sample-app v0.0.0-20200331144431-0279fcd5ab50
 	github.com/joho/godotenv v1.3.0
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
